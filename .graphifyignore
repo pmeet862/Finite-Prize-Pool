@@ -1,0 +1,27 @@
+# --- Output and VCS ---
+graphify-out/
+.git/
+
+# --- Unity-generated folders (anchored to the project root) ---
+/Library/
+/Temp/
+/Obj/
+/Logs/
+/Build/
+/Builds/
+/UserSettings/
+/MemoryCaptures/
+/Recordings/
+/.vs/
+/.idea/
+
+# --- Vendor / third-party code (add one anchored line per vendor folder) ---
+/Assets/TextMesh Pro/
+/Assets/TutorialInfo/
+
+# --- Unity-generated project/solution/package files ---
+*.csproj
+*.sln
+*.slnx
+/Packages/manifest.json
+/Packages/packages-lock.json
