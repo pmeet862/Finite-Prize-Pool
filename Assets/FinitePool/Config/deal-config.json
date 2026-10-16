@@ -1,0 +1,55 @@
+{
+  "configVersion": "placeholder-2026-10-15.1",
+  "isPlaceholder": true,
+  "notes": "PLACEHOLDER bag values. The real bags are on 'Finite Pool Mathematics' PDF pp.2-3. These values reproduce the brief's stated facts (Inner $1.00 = 1 paired cycle, Outer $1.00 = 9, Outer $1.75 with 1 cycle is fractional, Inner $1.00 with max 5 losses is impossible). See .docs/ASSUMPTIONS.md A-01. This is the ONLY file that holds bag values.",
+  "targetRtp": "0.90",
+  "bonusUnitValueCents": 100,
+  "betLevelsCents": [25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500],
+  "maxGenerationAttempts": 1000,
+  "maxDealTickets": 50000000,
+  "placementLimits": {
+    "lossRunFactor": "2",
+    "regularGapFactor": "2",
+    "bigGapFactor": "2",
+    "maxConsecutiveLossesOverride": null,
+    "maxRegularGapOverride": null,
+    "maxBigGapOverride": null,
+    "repeatingIntervalMaxPeriod": 4,
+    "layoutStrategy": "GapRepair"
+  },
+  "modes": {
+    "Inner": {
+      "regularBag": {
+        "tickets": [
+          { "kind": "Multiplier", "multiplier": "1", "count": 2 },
+          { "kind": "Multiplier", "multiplier": "2", "count": 2 },
+          { "kind": "Multiplier", "multiplier": "3", "count": 1 },
+          { "kind": "Bonus", "bonusUnits": 5, "count": 1 }
+        ]
+      },
+      "bigBag": {
+        "tickets": [
+          { "kind": "Multiplier", "multiplier": "20", "count": 1 },
+          { "kind": "Bonus", "bonusUnits": 20, "count": 1 }
+        ]
+      }
+    },
+    "Outer": {
+      "regularBag": {
+        "tickets": [
+          { "kind": "Multiplier", "multiplier": "1", "count": 4 },
+          { "kind": "Multiplier", "multiplier": "2", "count": 3 },
+          { "kind": "Multiplier", "multiplier": "5", "count": 1 },
+          { "kind": "Bonus", "bonusUnits": 3, "count": 2 }
+        ]
+      },
+      "bigBag": {
+        "tickets": [
+          { "kind": "Multiplier", "multiplier": "50", "count": 1 },
+          { "kind": "Multiplier", "multiplier": "25", "count": 1 },
+          { "kind": "Bonus", "bonusUnits": 40, "count": 1 }
+        ]
+      }
+    }
+  }
+}
