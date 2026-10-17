@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FinitePool.Engine.Core;
+using FinitePool.Engine.Placement;
 
 namespace FinitePool.Engine.Deals
 {
@@ -11,6 +12,10 @@ namespace FinitePool.Engine.Deals
     /// Internal on purpose: only the engine (and its tests) can see tickets.
     /// The game, debug panel and editor tools cannot compile code that reads them
     /// (brief §3.1, §5: the UI must never read the ticket list).
+    ///
+    /// A deal carries everything needed to check it on its own (bonus unit value,
+    /// the placement limits it was built with), so it can be verified long after
+    /// the config has changed.
     /// </summary>
     internal sealed class Deal
     {
@@ -23,6 +28,13 @@ namespace FinitePool.Engine.Deals
         public DateTime CreatedUtc { get; }
         public Fraction TargetRtp { get; }
         public long PairedCycles { get; }
+
+        /// <summary>The value of one bonus unit when the deal was built.</summary>
+        public Money BonusUnitValue { get; }
+
+        /// <summary>The placement limits the deal was built with.</summary>
+        public PlacementLimits Limits { get; }
+
         public IReadOnlyList<TicketType> TicketTypes { get; }
 
         public Deal(
@@ -33,6 +45,8 @@ namespace FinitePool.Engine.Deals
             DateTime createdUtc,
             Fraction targetRtp,
             long pairedCycles,
+            Money bonusUnitValue,
+            PlacementLimits limits,
             IReadOnlyList<TicketType> ticketTypes,
             ushort[] ticketTypeIds)
         {
@@ -43,6 +57,8 @@ namespace FinitePool.Engine.Deals
             CreatedUtc = createdUtc;
             TargetRtp = targetRtp;
             PairedCycles = pairedCycles;
+            BonusUnitValue = bonusUnitValue;
+            Limits = limits ?? throw new ArgumentNullException(nameof(limits));
             TicketTypes = ticketTypes ?? throw new ArgumentNullException(nameof(ticketTypes));
             m_ticketTypeIds = ticketTypeIds ?? throw new ArgumentNullException(nameof(ticketTypeIds));
         }

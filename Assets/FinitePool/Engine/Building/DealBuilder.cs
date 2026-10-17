@@ -91,6 +91,8 @@ namespace FinitePool.Engine.Building
                     m_clock.UtcNow,
                     config.TargetRtp,
                     size.PairedCycles,
+                    config.BonusUnitValue,
+                    limits,
                     ticketTypes,
                     Merge(layout, regularTickets, bigTickets));
 
