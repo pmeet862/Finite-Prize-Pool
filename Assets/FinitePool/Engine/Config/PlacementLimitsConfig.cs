@@ -6,7 +6,7 @@ namespace FinitePool.Engine.Config
         /// <summary>The brief's literal procedure: shuffle the category list, then check it.</summary>
         ShuffleAndCheck,
 
-        /// <summary>Random shuffle followed by random, bounded repairs. The result is still fully checked.</summary>
+        /// <summary>The same shuffle, then random repairs of any gap that breaks a limit. The result is still fully checked.</summary>
         GapRepair
     }
 

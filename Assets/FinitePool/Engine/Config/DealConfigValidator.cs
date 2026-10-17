@@ -46,9 +46,9 @@ namespace FinitePool.Engine.Config
                 errors.Add($"maxGenerationAttempts must be at least 1 (got {config.MaxGenerationAttempts}).");
             }
 
-            if (config.MaxDealTickets < 1)
+            if (config.MaxDealTickets < 1 || config.MaxDealTickets > int.MaxValue)
             {
-                errors.Add($"maxDealTickets must be at least 1 (got {config.MaxDealTickets}).");
+                errors.Add($"maxDealTickets must be between 1 and {int.MaxValue} (got {config.MaxDealTickets}); a deal is held in one array.");
             }
 
             ValidatePlacementLimits(config.PlacementLimits, errors);

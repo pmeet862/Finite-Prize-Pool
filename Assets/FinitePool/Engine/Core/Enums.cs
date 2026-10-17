@@ -6,8 +6,11 @@ namespace FinitePool.Engine.Core
         Outer
     }
 
-    /// <summary>The slot type a ticket fills in a deal.</summary>
-    public enum TicketCategory
+    /// <summary>
+    /// The slot type a ticket fills in a deal. Backed by a byte so a
+    /// multi-million-slot category layout stays small in memory.
+    /// </summary>
+    public enum TicketCategory : byte
     {
         Loss,
         Regular,
