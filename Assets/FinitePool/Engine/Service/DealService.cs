@@ -84,6 +84,8 @@ namespace FinitePool.Engine.Service
             get { lock (m_sync) return m_config; }
         }
 
+        public IReadOnlyList<BetLevel> BetLevels => Config.BetLevels;
+
         // ---------------------------------------------------------------- spins
 
         public SpinOutcome Spin(PlayerId player, GameMode mode, BetLevel bet)
@@ -525,6 +527,11 @@ namespace FinitePool.Engine.Service
             WagersUnits = entry.WagersUnits,
             PayoutsUnits = entry.PayoutsUnits
         };
+
+        public IReadOnlyList<DealEntry> GetDeals()
+        {
+            lock (m_sync) return EngineStateJson.Clone(m_state).Deals;
+        }
 
         public IReadOnlyList<CompletedDealRecord> GetCompletedDeals()
         {

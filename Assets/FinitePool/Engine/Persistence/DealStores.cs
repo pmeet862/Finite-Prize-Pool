@@ -117,6 +117,8 @@ namespace FinitePool.Engine.Persistence
     /// </summary>
     internal sealed class FileDealStore : IDealStore
     {
+        public const string STATE_FILE_NAME = "state.json";
+
         private static readonly UTF8Encoding Utf8NoBom = new UTF8Encoding(false);
 
         private readonly string m_dealsFolder;
@@ -128,7 +130,7 @@ namespace FinitePool.Engine.Persistence
             if (string.IsNullOrWhiteSpace(rootFolder)) throw new ArgumentException("Root folder is required.", nameof(rootFolder));
 
             m_dealsFolder = Path.Combine(rootFolder, "deals");
-            m_statePath = Path.Combine(rootFolder, "state.json");
+            m_statePath = Path.Combine(rootFolder, STATE_FILE_NAME);
             m_spinLogPath = Path.Combine(rootFolder, "spins.log.jsonl");
             Directory.CreateDirectory(m_dealsFolder);
             DropIncompleteLastSpinRecord();

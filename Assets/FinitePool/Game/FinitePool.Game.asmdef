@@ -1,0 +1,16 @@
+{
+    "name": "FinitePool.Game",
+    "rootNamespace": "FinitePool.Game",
+    "references": [
+        "FinitePool.Engine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

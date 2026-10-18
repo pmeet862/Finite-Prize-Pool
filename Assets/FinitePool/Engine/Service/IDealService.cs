@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using FinitePool.Engine.Config;
 using FinitePool.Engine.Core;
+using FinitePool.Engine.Persistence;
 
 namespace FinitePool.Engine.Service
 {
@@ -26,6 +27,9 @@ namespace FinitePool.Engine.Service
 
         Money GetBalance(PlayerId player);
 
+        /// <summary>The bet levels the current config allows, lowest first.</summary>
+        IReadOnlyList<BetLevel> BetLevels { get; }
+
         /// <summary>
         /// Makes sure this mode and bet has an active deal and a verified Ready successor, building
         /// whatever is missing in the background. Also retries a combination that failed to build.
@@ -50,6 +54,9 @@ namespace FinitePool.Engine.Service
         /// version; Ready successors built on the old one are retired and rebuilt (brief §4.6).
         /// </summary>
         void ApplyConfig(DealConfig config);
+
+        /// <summary>Every deal the engine knows about, in any state (copies of the saved entries; no tickets).</summary>
+        IReadOnlyList<DealEntry> GetDeals();
 
         IReadOnlyList<CompletedDealRecord> GetCompletedDeals();
         IReadOnlyList<RetireRecord> GetRetiredDeals();

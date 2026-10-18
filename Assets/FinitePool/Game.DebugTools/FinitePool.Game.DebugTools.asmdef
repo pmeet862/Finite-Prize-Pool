@@ -1,0 +1,19 @@
+{
+    "name": "FinitePool.Game.DebugTools",
+    "rootNamespace": "FinitePool.Game.DebugTools",
+    "references": [
+        "FinitePool.Engine",
+        "FinitePool.Game"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_EDITOR || DEVELOPMENT_BUILD"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

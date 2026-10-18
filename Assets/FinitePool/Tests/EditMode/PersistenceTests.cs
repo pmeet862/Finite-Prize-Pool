@@ -102,6 +102,30 @@ namespace FinitePool.Tests
         }
 
         [Test]
+        public void SavedRecords_CanBeReadWithoutTheEngine_AndReadingChangesNoFile()
+        {
+            Assert.That(SavedDealRecords.Read(m_folder.Path).CompletedDeals, Is.Empty, "nothing saved yet");
+
+            var store = new FileDealStore(m_folder.Path);
+            EngineState state = EngineState.CreateNew("v-test");
+            state.Deals.Add(new DealEntry { DealId = "active-1", State = DealState.Active });
+            state.CompletedDeals.Add(new FinitePool.Engine.Service.CompletedDealRecord { DealId = "done-1" });
+            state.RetiredDeals.Add(new FinitePool.Engine.Service.RetireRecord { DealId = "retired-1" });
+            store.WriteState(state);
+            store.WriteState(state); // leaves a .bak next to state.json
+            string statePath = Path.Combine(m_folder.Path, FileDealStore.STATE_FILE_NAME);
+            File.Delete(statePath); // as if a save stopped halfway: only the backup is left
+
+            SavedDealRecords records = SavedDealRecords.Read(m_folder.Path);
+
+            Assert.That((records.Deals[0].DealId, records.Deals[0].State), Is.EqualTo(("active-1", DealState.Active)));
+            Assert.That(records.CompletedDeals[0].DealId, Is.EqualTo("done-1"));
+            Assert.That(records.RetiredDeals[0].DealId, Is.EqualTo("retired-1"));
+            Assert.That(File.Exists(statePath), Is.False, "reading does not run crash recovery");
+            Assert.That(File.Exists(AtomicFile.BackupPath(statePath)), Is.True);
+        }
+
+        [Test]
         public void AHalfWrittenLastSpinRecord_IsDroppedOnOpen()
         {
             var store = new FileDealStore(m_folder.Path);

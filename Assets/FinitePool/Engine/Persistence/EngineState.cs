@@ -54,8 +54,11 @@ namespace FinitePool.Engine.Persistence
             Deals.FirstOrDefault(entry => entry.Mode == mode && entry.BetUnits == bet.Amount.Units && entry.State == state);
     }
 
-    /// <summary>The engine's bookkeeping for one deal. The tickets themselves are in the deal file.</summary>
-    internal sealed class DealEntry
+    /// <summary>
+    /// The engine's bookkeeping for one deal, as saved in state.json. The tickets themselves are in the
+    /// deal file and never leave the engine. Public so admin tools can list deals; they always get copies.
+    /// </summary>
+    public sealed class DealEntry
     {
         public string DealId { get; set; }
         public GameMode Mode { get; set; }
