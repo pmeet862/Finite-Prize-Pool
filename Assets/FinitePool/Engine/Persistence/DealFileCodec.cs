@@ -47,7 +47,7 @@ namespace FinitePool.Engine.Persistence
                 FormatVersion = FORMAT_VERSION,
                 DealId = deal.DealId,
                 Mode = deal.Mode.ToString(),
-                BetCents = deal.Bet.Amount.Units,
+                BetUnits = deal.Bet.Amount.Units,
                 ConfigVersion = deal.ConfigVersion,
                 CreatedUtc = deal.CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
                 TargetRtpNumerator = deal.TargetRtp.Numerator,
@@ -166,7 +166,7 @@ namespace FinitePool.Engine.Persistence
             return new Deal(
                 document.DealId,
                 ParseEnum<GameMode>(document.Mode, document.DealId),
-                BetLevel.FromCents(document.BetCents),
+                BetLevel.FromUnits(document.BetUnits),
                 document.ConfigVersion,
                 DateTime.Parse(document.CreatedUtc, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                 new Fraction(document.TargetRtpNumerator, document.TargetRtpDenominator),
@@ -237,7 +237,7 @@ namespace FinitePool.Engine.Persistence
             public int FormatVersion { get; set; }
             public string DealId { get; set; }
             public string Mode { get; set; }
-            public long BetCents { get; set; }
+            public long BetUnits { get; set; }
             public string ConfigVersion { get; set; }
             public string CreatedUtc { get; set; }
             public long TargetRtpNumerator { get; set; }

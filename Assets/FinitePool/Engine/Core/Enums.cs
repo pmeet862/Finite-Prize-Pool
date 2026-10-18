@@ -28,4 +28,16 @@ namespace FinitePool.Engine.Core
         Multiplier,
         Bonus
     }
+
+    /// <summary>
+    /// Where a deal is in its life (brief §4.6). Ready → Active → Completed,
+    /// or Retired when taken out of use early (or replaced before it was used).
+    /// </summary>
+    public enum DealState
+    {
+        Ready,
+        Active,
+        Completed,
+        Retired
+    }
 }

@@ -2,9 +2,12 @@ using FinitePool.Engine.Building;
 using FinitePool.Engine.Config;
 using FinitePool.Engine.Core;
 using FinitePool.Engine.Infrastructure;
+using FinitePool.Engine.Persistence;
+using FinitePool.Engine.Service;
 using FinitePool.Engine.Sizing;
 using FinitePool.Tests.Fakes;
 using NUnit.Framework;
+using static FinitePool.Tests.Fakes.Services;
 
 namespace FinitePool.Tests
 {
@@ -67,6 +70,75 @@ namespace FinitePool.Tests
             Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.FailureReason, Is.EqualTo(BuildFailureReason.LimitsImpossible));
             Assert.That(result.Attempts, Is.EqualTo(0), "rejected before generating, not after 1,000 failed attempts");
+        }
+
+        [Test]
+        public void Scenario04_TooLittleBalance_SpinRejected_NoTicketUsed()
+        {
+            var store = new InMemoryDealStore();
+            DealService service = ReadyToPlay(store, GameMode.Inner, 100);
+            var poorPlayer = new PlayerId("poor");
+            service.RegisterPlayer(poorPlayer, Money.FromCents(99));
+
+            SpinOutcome outcome = service.Spin(poorPlayer, GameMode.Inner, TestConfigs.Bet(100));
+
+            Assert.That(outcome.IsAccepted, Is.False);
+            Assert.That(outcome.Rejection, Is.EqualTo(SpinRejection.InsufficientBalance));
+            Assert.That(service.GetBalance(poorPlayer), Is.EqualTo(Money.FromCents(99)));
+            Assert.That(service.GetActiveDealInfo(GameMode.Inner, TestConfigs.Bet(100)).SpinsPlayed, Is.EqualTo(0));
+            Assert.That(store.ReadSpinRecords(), Is.Empty);
+            Assert.That(SpinAndShow(service, Alice, GameMode.Inner, 100).TicketIndex, Is.EqualTo(0), "the next spin still gets ticket 0");
+        }
+
+        [Test]
+        public void Scenario05_SaveAndReloadMidDeal_ContinuesFromTheExactNextTicket()
+        {
+            using (var folder = new TempFolder())
+            {
+                DealService before = ReadyToPlay(new FileDealStore(folder.Path), GameMode.Outer, 100);
+                for (int i = 0; i < 7; i++) SpinAndShow(before, i % 2 == 0 ? Alice : Bob, GameMode.Outer, 100);
+                Money aliceBefore = before.GetBalance(Alice);
+                Money bobBefore = before.GetBalance(Bob);
+                string dealId = before.GetActiveDealInfo(GameMode.Outer, TestConfigs.Bet(100)).DealId;
+
+                // The game closes; a new service reads everything back from disk.
+                var reopenedStore = new FileDealStore(folder.Path);
+                DealService after = Open(reopenedStore);
+
+                Assert.That(after.GetBalance(Alice), Is.EqualTo(aliceBefore));
+                Assert.That(after.GetBalance(Bob), Is.EqualTo(bobBefore));
+                Assert.That(after.GetActiveDealInfo(GameMode.Outer, TestConfigs.Bet(100)).DealId, Is.EqualTo(dealId));
+
+                SpinResult next = SpinAndShow(after, Alice, GameMode.Outer, 100);
+                Assert.That(next.DealId, Is.EqualTo(dealId));
+                Assert.That(next.TicketIndex, Is.EqualTo(7));
+                Assert.That(next.Award, Is.EqualTo(reopenedStore.ReadDeal(dealId).GetTicket(7).Award));
+            }
+        }
+
+        [Test]
+        public void Scenario06_SpinNotYetShown_IsReplayedAfterReload_WithoutUsingAnotherTicket()
+        {
+            using (var folder = new TempFolder())
+            {
+                DealService before = ReadyToPlay(new FileDealStore(folder.Path), GameMode.Inner, 100);
+                SpinAndShow(before, Alice, GameMode.Inner, 100);
+                SpinResult taken = before.Spin(Alice, GameMode.Inner, TestConfigs.Bet(100)).Result; // game closes mid-animation
+                Money balanceAfterTaken = before.GetBalance(Alice);
+
+                DealService after = Open(new FileDealStore(folder.Path));
+                SpinResult replayed = after.GetPendingResult(Alice);
+
+                Assert.That(replayed, Is.Not.Null);
+                Assert.That((replayed.SpinId, replayed.DealId, replayed.TicketIndex, replayed.Award, replayed.BalanceAfter),
+                    Is.EqualTo((taken.SpinId, taken.DealId, taken.TicketIndex, taken.Award, taken.BalanceAfter)));
+                Assert.That(after.GetActiveDealInfo(GameMode.Inner, TestConfigs.Bet(100)).SpinsPlayed, Is.EqualTo(2), "reloading used no ticket");
+                Assert.That(after.GetBalance(Alice), Is.EqualTo(balanceAfterTaken), "the award was credited once, not twice");
+
+                Assert.That(after.MarkShown(Alice, replayed.SpinId), Is.True);
+                Assert.That(after.GetPendingResult(Alice), Is.Null);
+                Assert.That(SpinAndShow(after, Alice, GameMode.Inner, 100).TicketIndex, Is.EqualTo(2));
+            }
         }
 
         [Test]

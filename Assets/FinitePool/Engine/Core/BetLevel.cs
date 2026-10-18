@@ -22,6 +22,17 @@ namespace FinitePool.Engine.Core
             return new BetLevel(Money.FromCents(cents));
         }
 
+        /// <summary>From stored money units (see <see cref="Money.UNITS_PER_DOLLAR"/>).</summary>
+        public static BetLevel FromUnits(long units)
+        {
+            if (units <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(units), units, "A bet must be positive.");
+            }
+
+            return new BetLevel(Money.FromUnits(units));
+        }
+
         public static bool operator ==(BetLevel left, BetLevel right) => left.Equals(right);
 
         public static bool operator !=(BetLevel left, BetLevel right) => !left.Equals(right);
