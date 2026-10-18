@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using FinitePool.Engine.Config;
 using FinitePool.Engine.Core;
 
 namespace FinitePool.Engine.Service
@@ -24,15 +26,35 @@ namespace FinitePool.Engine.Service
 
         Money GetBalance(PlayerId player);
 
-        /// <summary>Starts building the first deal for this mode and bet, in the background, if there isn't one yet.</summary>
+        /// <summary>
+        /// Makes sure this mode and bet has an active deal and a verified Ready successor, building
+        /// whatever is missing in the background. Also retries a combination that failed to build.
+        /// </summary>
         void EnsurePrepared(GameMode mode, BetLevel bet);
 
         DealAvailability GetAvailability(GameMode mode, BetLevel bet);
     }
 
-    /// <summary>Operator actions: players and balances now; retire, config and records in Phase 5.</summary>
+    /// <summary>Operator actions: retire, config changes, audit records, players.</summary>
     public interface IDealAdmin
     {
+        /// <summary>
+        /// Stops using the active deal for this mode and bet, marks it Retired and switches to a
+        /// freshly verified replacement (brief §4.7). Throws if there is no active deal, or no
+        /// replacement can be built (in which case nothing changes).
+        /// </summary>
+        RetireRecord Retire(GameMode mode, BetLevel bet, string reason);
+
+        /// <summary>
+        /// Uses a new config for every deal built from now on. Active deals keep their own
+        /// version; Ready successors built on the old one are retired and rebuilt (brief §4.6).
+        /// </summary>
+        void ApplyConfig(DealConfig config);
+
+        IReadOnlyList<CompletedDealRecord> GetCompletedDeals();
+        IReadOnlyList<RetireRecord> GetRetiredDeals();
+        IReadOnlyList<BuildFailureRecord> GetBuildFailures();
+
         /// <summary>Adds a player with a starting balance. Returns false (and changes nothing) if the player exists.</summary>
         bool RegisterPlayer(PlayerId player, Money startingBalance);
 

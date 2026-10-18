@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinitePool.Engine.Core;
+using FinitePool.Engine.Service;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -41,6 +42,10 @@ namespace FinitePool.Engine.Persistence
         /// <summary>The most recent committed spin. Used to repair the spin log after a crash.</summary>
         public SpinRecord LastCommittedSpin { get; set; }
 
+        public List<CompletedDealRecord> CompletedDeals { get; set; } = new List<CompletedDealRecord>();
+        public List<RetireRecord> RetiredDeals { get; set; } = new List<RetireRecord>();
+        public List<BuildFailureRecord> BuildFailures { get; set; } = new List<BuildFailureRecord>();
+
         public static EngineState CreateNew(string configVersion) => new EngineState { ConfigVersion = configVersion };
 
         public DealEntry FindDeal(string dealId) => Deals.FirstOrDefault(entry => entry.DealId == dealId);
@@ -64,6 +69,8 @@ namespace FinitePool.Engine.Persistence
 
         public long WagersUnits { get; set; }
         public long PayoutsUnits { get; set; }
+        public long TargetRtpNumerator { get; set; }
+        public long TargetRtpDenominator { get; set; }
         public DateTime CreatedUtc { get; set; }
         public DateTime? ActivatedUtc { get; set; }
         public DateTime? ClosedUtc { get; set; }

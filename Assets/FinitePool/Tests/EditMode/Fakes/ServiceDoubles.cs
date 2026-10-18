@@ -71,6 +71,18 @@ namespace FinitePool.Tests.Fakes
         }
     }
 
+    /// <summary>Holds background builds until the test runs them, to observe "still building" moments.</summary>
+    internal sealed class ManualScheduler : IBackgroundScheduler
+    {
+        private readonly Queue<Action> m_work = new Queue<Action>();
+
+        public int Pending => m_work.Count;
+
+        public void Run(Action work) => m_work.Enqueue(work);
+
+        public void RunNext() => m_work.Dequeue()();
+    }
+
     /// <summary>A fresh folder under the system temp path, deleted when disposed.</summary>
     internal sealed class TempFolder : IDisposable
     {
@@ -97,20 +109,25 @@ namespace FinitePool.Tests.Fakes
         public static readonly PlayerId Bob = new PlayerId("bob");
         public static readonly Money StartingBalance = Money.FromCents(10000);
 
-        public static DealService Open(IDealStore store, DealConfig config = null, IRandomSource random = null, IEngineLog log = null) =>
-            new DealService(config ?? TestConfigs.Placeholder(), store, random ?? new CryptoRandomSource(), new FakeClock(),
-                log ?? NullEngineLog.Instance, new ImmediateScheduler());
+        public static DealService Open(IDealStore store, DealConfig config = null, IRandomSource random = null, IEngineLog log = null,
+            IClock clock = null, IBackgroundScheduler scheduler = null) =>
+            new DealService(config ?? TestConfigs.Placeholder(), store, random ?? new CryptoRandomSource(), clock ?? new FakeClock(),
+                log ?? NullEngineLog.Instance, scheduler ?? new ImmediateScheduler());
 
         /// <summary>A service with Alice and Bob registered ($100 each) and an active deal for the given mode and bet.</summary>
-        public static DealService ReadyToPlay(IDealStore store, GameMode mode, long betCents, IRandomSource random = null)
+        public static DealService ReadyToPlay(IDealStore store, GameMode mode, long betCents, IRandomSource random = null, IClock clock = null)
         {
-            DealService service = Open(store, random: random);
+            DealService service = Open(store, random: random, clock: clock);
             service.RegisterPlayer(Alice, StartingBalance);
             service.RegisterPlayer(Bob, StartingBalance);
             service.EnsurePrepared(mode, TestConfigs.Bet(betCents));
             Assert.That(service.GetAvailability(mode, TestConfigs.Bet(betCents)).Status, Is.EqualTo(AvailabilityStatus.Available));
             return service;
         }
+
+        /// <summary>The Ready successor waiting behind the active deal, read from saved state.</summary>
+        public static DealEntry ReadyDeal(IDealStore store, GameMode mode, long betCents) =>
+            store.ReadState().FindDeal(mode, TestConfigs.Bet(betCents), DealState.Ready);
 
         /// <summary>Spins and marks the result shown, as the client does after its animation.</summary>
         public static SpinResult SpinAndShow(DealService service, PlayerId player, GameMode mode, long betCents)
