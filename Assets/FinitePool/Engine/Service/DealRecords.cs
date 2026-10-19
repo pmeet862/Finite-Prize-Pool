@@ -16,13 +16,23 @@ namespace FinitePool.Engine.Service
         public long PayoutsUnits { get; set; }
         public long TargetRtpNumerator { get; set; }
         public long TargetRtpDenominator { get; set; }
+        public long PlannedRtpNumerator { get; set; }
+        public long PlannedRtpDenominator { get; set; }
         public DateTime CompletedUtc { get; set; }
 
         [JsonIgnore] public Fraction TargetRtp => new Fraction(TargetRtpNumerator, TargetRtpDenominator);
+
+        /// <summary>The RTP the deal was built to pay: the target in exact mode, inside target ± tolerance otherwise.</summary>
+        [JsonIgnore] public Fraction PlannedRtp =>
+            PlannedRtpDenominator == 0 ? TargetRtp : new Fraction(PlannedRtpNumerator, PlannedRtpDenominator); // records saved before tolerance mode were exact
+
         [JsonIgnore] public Fraction ActualRtp => new Fraction(PayoutsUnits, WagersUnits);
 
-        /// <summary>Only a completed deal can reach its target; a retired one never does.</summary>
-        [JsonIgnore] public bool ReachedTargetRtp => ActualRtp == TargetRtp;
+        /// <summary>
+        /// The deal paid back exactly what it was planned to. The planned RTP was checked against the
+        /// target band before the deal was used. Only a completed deal can say this; a retired one never does.
+        /// </summary>
+        [JsonIgnore] public bool ReachedTargetRtp => ActualRtp == PlannedRtp;
     }
 
     /// <summary>

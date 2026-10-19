@@ -9,6 +9,8 @@ namespace FinitePool.Engine.Core
     /// </summary>
     public readonly struct Fraction : IEquatable<Fraction>
     {
+        public static readonly Fraction Zero = new Fraction(0, 1);
+
         public long Numerator { get; }
         public long Denominator { get; }
 
@@ -53,6 +55,19 @@ namespace FinitePool.Engine.Core
             decimal percent = ToDecimal() * 100m;
             return percent.ToString("F" + decimals, CultureInfo.InvariantCulture) + "%";
         }
+
+        /// <summary>True when this value is within ± <paramref name="tolerance"/> of <paramref name="center"/>, exactly.</summary>
+        public bool IsWithin(Fraction center, Fraction tolerance)
+        {
+            // |a/b − c/d| ≤ e/f  ⇔  |a·d − c·b| · f ≤ e · b · d   (denominators are always positive)
+            long difference = Math.Abs(checked(Numerator * center.Denominator - center.Numerator * Denominator));
+            return checked(difference * tolerance.Denominator) <= checked(tolerance.Numerator * Denominator * center.Denominator);
+        }
+
+        public static Fraction operator +(Fraction left, Fraction right) =>
+            new Fraction(checked(left.Numerator * right.Denominator + right.Numerator * left.Denominator), checked(left.Denominator * right.Denominator));
+
+        public static Fraction operator -(Fraction left, Fraction right) => left + new Fraction(-right.Numerator, right.Denominator);
 
         public static bool operator ==(Fraction left, Fraction right) => left.Equals(right);
 

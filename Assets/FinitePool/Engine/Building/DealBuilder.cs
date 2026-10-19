@@ -94,7 +94,9 @@ namespace FinitePool.Engine.Building
                     config.BonusUnitValue,
                     limits,
                     ticketTypes,
-                    Merge(layout, regularTickets, bigTickets));
+                    Merge(layout, regularTickets, bigTickets),
+                    size.ActualRtp,
+                    size.RtpTolerance);
 
                 m_log.Info($"Built {deal} after {attempt} attempt(s). Layout {report}.");
                 return BuildResult.Succeeded(deal, size, limits, report, attempt);

@@ -15,13 +15,16 @@ namespace FinitePool.Tests.Fakes
 
         public static Deal WithTicketTypes(Deal deal, IReadOnlyList<TicketType> ticketTypes) => Copy(deal, ticketTypes: ticketTypes);
 
+        public static Deal WithRtpTolerance(Deal deal, Fraction rtpTolerance) => Copy(deal, rtpTolerance: rtpTolerance);
+
         public static ushort[] TicketIds(Deal deal) => deal.TicketTypeIds.ToArray();
 
         /// <summary>Positions of every ticket in a category, in deal order.</summary>
         public static List<int> PositionsOf(Deal deal, TicketCategory category) =>
             Enumerable.Range(0, deal.TicketCount).Where(i => deal.GetTicket(i).Category == category).ToList();
 
-        private static Deal Copy(Deal deal, ushort[] ticketTypeIds = null, PlacementLimits limits = null, IReadOnlyList<TicketType> ticketTypes = null) =>
+        private static Deal Copy(Deal deal, ushort[] ticketTypeIds = null, PlacementLimits limits = null, IReadOnlyList<TicketType> ticketTypes = null,
+            Fraction? rtpTolerance = null) =>
             new Deal(
                 deal.DealId,
                 deal.Mode,
@@ -33,6 +36,8 @@ namespace FinitePool.Tests.Fakes
                 deal.BonusUnitValue,
                 limits ?? deal.Limits,
                 ticketTypes ?? deal.TicketTypes,
-                ticketTypeIds ?? TicketIds(deal));
+                ticketTypeIds ?? TicketIds(deal),
+                deal.PlannedRtp,
+                rtpTolerance ?? deal.RtpTolerance);
     }
 }

@@ -26,6 +26,11 @@ namespace FinitePool.Engine.Config
                 errors.Add($"targetRtp must be positive (got {config.TargetRtp}).");
             }
 
+            if (config.RtpTolerance.Numerator < 0 || (config.TargetRtp - config.RtpTolerance).Numerator <= 0)
+            {
+                errors.Add($"rtpTolerance must be at least 0 and below targetRtp (got {config.RtpTolerance}).");
+            }
+
             if (config.BonusUnitValue <= Money.Zero)
             {
                 errors.Add($"bonusUnitValueCents must be positive (got {config.BonusUnitValue}).");

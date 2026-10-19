@@ -18,14 +18,21 @@ namespace FinitePool.Editor
     public static class DealReportsMenu
     {
         private const string CONFIG_PATH = "Assets/FinitePool/Config/deal-config.json";
+        private const string TOLERANCE_CONFIG_PATH = "Assets/FinitePool/Config/deal-config.tolerance.json";
 
         private static string DocsFolder => Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Docs"));
 
         [MenuItem("Finite Pool/Export Deal-Size Table (CSV)")]
-        private static void ExportDealSizeTable()
+        private static void ExportDealSizeTable() => ExportTable(CONFIG_PATH, "deal-size-table.csv");
+
+        /// <summary>Brief §6 stretch: the same table with RTP allowed anywhere in 90% ± 0.1 points.</summary>
+        [MenuItem("Finite Pool/Export Deal-Size Table, Tolerance Mode (CSV)")]
+        private static void ExportToleranceTable() => ExportTable(TOLERANCE_CONFIG_PATH, "deal-size-table-tolerance.csv");
+
+        private static void ExportTable(string configPath, string fileName)
         {
-            string path = Path.Combine(DocsFolder, "deal-size-table.csv");
-            File.WriteAllText(path, DealSizeTable.ToCsv(LoadConfig()));
+            string path = Path.Combine(DocsFolder, fileName);
+            File.WriteAllText(path, DealSizeTable.ToCsv(LoadConfig(configPath)));
             Debug.Log($"Deal-size table written to {path}");
             EditorUtility.OpenWithDefaultApp(path);
         }
@@ -33,7 +40,7 @@ namespace FinitePool.Editor
         [MenuItem("Finite Pool/Write Simulation Report")]
         private static void WriteSimulationReport()
         {
-            DealConfig config = LoadConfig();
+            DealConfig config = LoadConfig(CONFIG_PATH);
             var report = new StringBuilder();
             report.AppendLine("# Simulation report");
             report.AppendLine();
@@ -67,21 +74,21 @@ namespace FinitePool.Editor
 
             report.AppendLine($"## {mode} {bet}: {dealCount} complete deal(s)");
             report.AppendLine();
-            report.AppendLine("| # | Deal ID | Tickets | Wagers | Payouts | Actual RTP | Exactly target? |");
-            report.AppendLine("|---|---|---|---|---|---|---|");
+            report.AppendLine("| # | Deal ID | Tickets | Wagers | Payouts | Planned RTP | Actual RTP | Reached planned RTP? |");
+            report.AppendLine("|---|---|---|---|---|---|---|---|");
             for (int i = 0; i < deals.Count; i++)
             {
                 CompletedDealRecord deal = deals[i];
                 allExact &= deal.ReachedTargetRtp;
                 report.AppendLine($"| {i + 1} | `{deal.DealId}` | {deal.TicketCount} | {Money.FromUnits(deal.WagersUnits)} | " +
-                                  $"{Money.FromUnits(deal.PayoutsUnits)} | {deal.ActualRtp.ToPercentString()} ({deal.ActualRtp}) | {(deal.ReachedTargetRtp ? "yes" : "NO")} |");
+                                  $"{Money.FromUnits(deal.PayoutsUnits)} | {deal.PlannedRtp.ToPercentString()} | {deal.ActualRtp.ToPercentString()} ({deal.ActualRtp}) | {(deal.ReachedTargetRtp ? "yes" : "NO")} |");
             }
 
             report.AppendLine();
             return allExact;
         }
 
-        private static DealConfig LoadConfig() =>
-            DealConfigJson.Parse(AssetDatabase.LoadAssetAtPath<TextAsset>(CONFIG_PATH).text);
+        private static DealConfig LoadConfig(string configPath) =>
+            DealConfigJson.Parse(AssetDatabase.LoadAssetAtPath<TextAsset>(configPath).text);
     }
 }

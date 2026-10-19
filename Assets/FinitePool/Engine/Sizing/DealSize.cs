@@ -13,6 +13,9 @@ namespace FinitePool.Engine.Sizing
         public BetLevel Bet { get; }
         public Fraction TargetRtp { get; }
 
+        /// <summary>Allowed distance from the target; zero in exact mode.</summary>
+        public Fraction RtpTolerance { get; }
+
         public long PairedCycles { get; }
         public int RegularTicketsPerCycle { get; }
         public int BigTicketsPerCycle { get; }
@@ -37,15 +40,22 @@ namespace FinitePool.Engine.Sizing
         public Money TotalWagers { get; }
         public Money TotalPayouts { get; }
 
-        /// <summary>Total payouts ÷ total wagers as an exact fraction.</summary>
+        /// <summary>
+        /// Total payouts ÷ total wagers as an exact fraction: the deal's planned RTP, which a
+        /// completed deal always reaches. Exactly the target in exact mode.
+        /// </summary>
         public Fraction ActualRtp => new Fraction(TotalPayouts.Units, TotalWagers.Units);
 
         public bool IsExactlyTargetRtp => ActualRtp == TargetRtp;
+
+        /// <summary>Exact mode: hits the target exactly. Tolerance mode: inside target ± tolerance.</summary>
+        public bool IsOnTarget => RtpTolerance.Numerator == 0 ? IsExactlyTargetRtp : ActualRtp.IsWithin(TargetRtp, RtpTolerance);
 
         internal DealSize(
             GameMode mode,
             BetLevel bet,
             Fraction targetRtp,
+            Fraction rtpTolerance,
             long pairedCycles,
             int regularTicketsPerCycle,
             int bigTicketsPerCycle,
@@ -59,6 +69,7 @@ namespace FinitePool.Engine.Sizing
             Mode = mode;
             Bet = bet;
             TargetRtp = targetRtp;
+            RtpTolerance = rtpTolerance;
             PairedCycles = pairedCycles;
             RegularTicketsPerCycle = regularTicketsPerCycle;
             BigTicketsPerCycle = bigTicketsPerCycle;

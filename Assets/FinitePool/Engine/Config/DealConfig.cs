@@ -20,6 +20,14 @@ namespace FinitePool.Engine.Config
 
         public string Notes { get; }
         public Fraction TargetRtp { get; }
+
+        /// <summary>
+        /// Tolerance mode (brief §6): deals may land anywhere in target ± this value (0.001 = ±0.1 points).
+        /// Zero means exact mode, the default: every deal hits the target exactly.
+        /// </summary>
+        public Fraction RtpTolerance { get; }
+
+        public bool IsToleranceMode => RtpTolerance.Numerator > 0;
         public Money BonusUnitValue { get; }
         public IReadOnlyList<BetLevel> BetLevels { get; }
         public int MaxGenerationAttempts { get; }
@@ -40,12 +48,14 @@ namespace FinitePool.Engine.Config
             int maxGenerationAttempts,
             long maxDealTickets,
             PlacementLimitsConfig placementLimits,
-            IReadOnlyDictionary<GameMode, ModeConfig> modes)
+            IReadOnlyDictionary<GameMode, ModeConfig> modes,
+            Fraction? rtpTolerance = null)
         {
             ConfigVersion = configVersion;
             IsPlaceholder = isPlaceholder;
             Notes = notes ?? string.Empty;
             TargetRtp = targetRtp;
+            RtpTolerance = rtpTolerance ?? Fraction.Zero;
             BonusUnitValue = bonusUnitValue;
             BetLevels = betLevels ?? throw new ArgumentNullException(nameof(betLevels));
             MaxGenerationAttempts = maxGenerationAttempts;

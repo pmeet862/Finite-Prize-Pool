@@ -1,5 +1,5 @@
-# Deal-size table for config placeholder-2026-10-15.1 (PLACEHOLDER bag values)
-no,mode,bet,multiplier_total_per_paired_cycle,bonus_units_per_paired_cycle,payout_per_paired_cycle,paired_cycles,paid_spins,regular_tickets,big_tickets,prize_tickets,losing_tickets,total_wagers,total_payouts,rtp,status
+# Deal-size table for config placeholder-2026-10-15.1, exact mode: RTP exactly 90.000% (PLACEHOLDER bag values)
+no,mode,bet,multiplier_total_per_paired_cycle,bonus_units_per_paired_cycle,payout_per_paired_cycle,paired_cycles,paid_spins,regular_tickets,big_tickets,prize_tickets,losing_tickets,total_wagers,total_payouts,planned_rtp,status
 1,Inner,0.25,29,25,32.25,3,430,18,6,24,406,107.50,96.75,90.000%,ok
 2,Inner,0.50,29,25,39.50,9,790,54,18,72,718,395.00,355.50,90.000%,ok
 3,Inner,0.75,29,25,46.75,27,1870,162,54,216,1654,1402.50,1262.25,90.000%,ok

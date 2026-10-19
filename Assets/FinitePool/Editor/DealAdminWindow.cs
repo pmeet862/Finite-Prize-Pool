@@ -40,7 +40,7 @@ namespace FinitePool.Editor
         {
             new Column("Deal ID", 210), new Column("Mode", 50), new Column("Bet", 55), new Column("Config", 190),
             new Column("Tickets", 60), new Column("Wagers", 80), new Column("Payouts", 80),
-            new Column("Target RTP", 80), new Column("Actual RTP", 80), new Column("Completed (UTC)", 150)
+            new Column("Target RTP", 80), new Column("Planned RTP", 80), new Column("Actual RTP", 80), new Column("Completed (UTC)", 150)
         };
 
         private static readonly Column[] RetiredColumns =
@@ -234,7 +234,7 @@ namespace FinitePool.Editor
         {
             record.DealId, record.Mode.ToString(), BetLevel.FromUnits(record.BetUnits).ToString(), record.ConfigVersion,
             record.TicketCount.ToString(), Money.FromUnits(record.WagersUnits).ToString(), Money.FromUnits(record.PayoutsUnits).ToString(),
-            record.TargetRtp.ToPercentString(), record.ActualRtp.ToPercentString(), record.CompletedUtc.ToString("u")
+            record.TargetRtp.ToPercentString(), record.PlannedRtp.ToPercentString(), record.ActualRtp.ToPercentString(), record.CompletedUtc.ToString("u")
         };
 
         private static string[] RetiredRow(RetireRecord record) => new[]

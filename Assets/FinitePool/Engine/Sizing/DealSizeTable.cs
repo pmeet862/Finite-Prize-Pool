@@ -15,12 +15,15 @@ namespace FinitePool.Engine.Sizing
         private const string HEADER =
             "no,mode,bet,multiplier_total_per_paired_cycle,bonus_units_per_paired_cycle,payout_per_paired_cycle," +
             "paired_cycles,paid_spins,regular_tickets,big_tickets,prize_tickets,losing_tickets," +
-            "total_wagers,total_payouts,rtp,status";
+            "total_wagers,total_payouts,planned_rtp,status";
 
         public static string ToCsv(DealConfig config)
         {
             var csv = new StringBuilder();
-            csv.AppendLine($"# Deal-size table for config {config.ConfigVersion}{(config.IsPlaceholder ? " (PLACEHOLDER bag values)" : "")}");
+            string rtpMode = config.IsToleranceMode
+                ? $"tolerance mode: RTP within {config.TargetRtp.ToPercentString()} ± {(config.RtpTolerance.ToDecimal() * 100m).ToString("0.###", CultureInfo.InvariantCulture)} points"
+                : $"exact mode: RTP exactly {config.TargetRtp.ToPercentString()}";
+            csv.AppendLine($"# Deal-size table for config {config.ConfigVersion}, {rtpMode}{(config.IsPlaceholder ? " (PLACEHOLDER bag values)" : "")}");
             csv.AppendLine(HEADER);
 
             int rowNumber = 0;

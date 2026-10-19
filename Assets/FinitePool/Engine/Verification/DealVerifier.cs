@@ -17,7 +17,8 @@ namespace FinitePool.Engine.Verification
     ///   1. ticket types: well-formed, and each award matches multiplier × bet or units × bonus value
     ///   2. size: the ticket count is the exact deal size for this many paired cycles
     ///   3. contents: each ticket type appears exactly paired cycles × count-per-cycle times
-    ///   4. money: wagers = tickets × bet, payouts = Σ awards, payouts ÷ wagers == target RTP exactly
+    ///   4. money: wagers = tickets × bet, payouts = Σ awards, payouts ÷ wagers == the deal's planned RTP
+    ///      exactly, and the planned RTP is the target (exact mode) or inside target ± tolerance
     ///   5. cycle isolation: every block of one cycle holds exactly one cycle's tickets (Regular and Big)
     ///   6. placement: the layout meets the limits the deal was built with
     /// </summary>
@@ -44,9 +45,14 @@ namespace FinitePool.Engine.Verification
                 if (wagers > Money.Zero)
                 {
                     actualRtp = new Fraction(totals.Payouts.Units, wagers.Units);
-                    if (actualRtp != deal.TargetRtp)
+                    if (actualRtp != deal.PlannedRtp)
                     {
-                        failures.Add($"RTP is {actualRtp} ({actualRtp.ToPercentString()}), not exactly {deal.TargetRtp}.");
+                        failures.Add($"RTP is {actualRtp} ({actualRtp.ToPercentString()}), not exactly the planned {deal.PlannedRtp}.");
+                    }
+
+                    if (!deal.PlannedRtp.IsWithin(deal.TargetRtp, deal.RtpTolerance))
+                    {
+                        failures.Add($"Planned RTP {deal.PlannedRtp.ToPercentString()} is outside {deal.TargetRtp.ToPercentString()} ± {deal.RtpTolerance}.");
                     }
                 }
                 else
@@ -131,7 +137,7 @@ namespace FinitePool.Engine.Verification
             }
         }
 
-        /// <summary>N must equal k × C × den ÷ (b × num), where C is what one paired cycle pays.</summary>
+        /// <summary>N must equal k × C × den ÷ (b × num), where C is what one paired cycle pays and num/den the planned RTP.</summary>
         private static void CheckSize(Deal deal, List<string> failures)
         {
             try
@@ -144,8 +150,8 @@ namespace FinitePool.Engine.Verification
                         payoutPerPairedCycle += type.Award.Units * type.CountPerCycle;
                     }
 
-                    long spinsNumerator = deal.PairedCycles * payoutPerPairedCycle * deal.TargetRtp.Denominator;
-                    long spinsDivisor = deal.Bet.Amount.Units * deal.TargetRtp.Numerator;
+                    long spinsNumerator = deal.PairedCycles * payoutPerPairedCycle * deal.PlannedRtp.Denominator;
+                    long spinsDivisor = deal.Bet.Amount.Units * deal.PlannedRtp.Numerator;
 
                     if (deal.PairedCycles < 1 || spinsDivisor <= 0 || spinsNumerator % spinsDivisor != 0)
                     {

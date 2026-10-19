@@ -27,6 +27,15 @@ namespace FinitePool.Engine.Deals
         public string ConfigVersion { get; }
         public DateTime CreatedUtc { get; }
         public Fraction TargetRtp { get; }
+
+        /// <summary>
+        /// What this deal pays back once fully played: payouts ÷ wagers of its tickets. Equals
+        /// <see cref="TargetRtp"/> in exact mode; anywhere in target ± <see cref="RtpTolerance"/> otherwise.
+        /// </summary>
+        public Fraction PlannedRtp { get; }
+
+        /// <summary>Allowed distance of the planned RTP from the target. Zero in exact mode.</summary>
+        public Fraction RtpTolerance { get; }
         public long PairedCycles { get; }
 
         /// <summary>The value of one bonus unit when the deal was built.</summary>
@@ -48,7 +57,9 @@ namespace FinitePool.Engine.Deals
             Money bonusUnitValue,
             PlacementLimits limits,
             IReadOnlyList<TicketType> ticketTypes,
-            ushort[] ticketTypeIds)
+            ushort[] ticketTypeIds,
+            Fraction? plannedRtp = null,
+            Fraction? rtpTolerance = null)
         {
             DealId = dealId ?? throw new ArgumentNullException(nameof(dealId));
             Mode = mode;
@@ -56,6 +67,8 @@ namespace FinitePool.Engine.Deals
             ConfigVersion = configVersion;
             CreatedUtc = createdUtc;
             TargetRtp = targetRtp;
+            PlannedRtp = plannedRtp ?? targetRtp;
+            RtpTolerance = rtpTolerance ?? Fraction.Zero;
             PairedCycles = pairedCycles;
             BonusUnitValue = bonusUnitValue;
             Limits = limits ?? throw new ArgumentNullException(nameof(limits));

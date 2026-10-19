@@ -253,6 +253,8 @@ namespace FinitePool.Engine.Service
                 PayoutsUnits = entry.PayoutsUnits,
                 TargetRtpNumerator = entry.TargetRtpNumerator,
                 TargetRtpDenominator = entry.TargetRtpDenominator,
+                PlannedRtpNumerator = entry.PlannedRtpDenominator == 0 ? entry.TargetRtpNumerator : entry.PlannedRtpNumerator,
+                PlannedRtpDenominator = entry.PlannedRtpDenominator == 0 ? entry.TargetRtpDenominator : entry.PlannedRtpDenominator,
                 CompletedUtc = now
             });
 
@@ -403,6 +405,8 @@ namespace FinitePool.Engine.Service
             TicketCount = deal.TicketCount,
             TargetRtpNumerator = deal.TargetRtp.Numerator,
             TargetRtpDenominator = deal.TargetRtp.Denominator,
+            PlannedRtpNumerator = deal.PlannedRtp.Numerator,
+            PlannedRtpDenominator = deal.PlannedRtp.Denominator,
             CreatedUtc = deal.CreatedUtc,
             ActivatedUtc = state == DealState.Active ? m_clock.UtcNow : (DateTime?)null
         };

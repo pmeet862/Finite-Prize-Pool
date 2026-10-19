@@ -52,6 +52,10 @@ namespace FinitePool.Engine.Persistence
                 CreatedUtc = deal.CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
                 TargetRtpNumerator = deal.TargetRtp.Numerator,
                 TargetRtpDenominator = deal.TargetRtp.Denominator,
+                PlannedRtpNumerator = deal.PlannedRtp.Numerator,
+                PlannedRtpDenominator = deal.PlannedRtp.Denominator,
+                RtpToleranceNumerator = deal.RtpTolerance.Numerator,
+                RtpToleranceDenominator = deal.RtpTolerance.Denominator,
                 PairedCycles = deal.PairedCycles,
                 BonusUnitValueUnits = deal.BonusUnitValue.Units,
                 Limits = new LimitsDocument
@@ -174,8 +178,14 @@ namespace FinitePool.Engine.Persistence
                 Money.FromUnits(document.BonusUnitValueUnits),
                 new PlacementLimits(limits.MaxConsecutiveLosses, limits.MaxRegularGap, limits.MaxBigGap, limits.RepeatingIntervalMaxPeriod),
                 types,
-                ticketTypeIds);
+                ticketTypeIds,
+                OptionalFraction(document.PlannedRtpNumerator, document.PlannedRtpDenominator),
+                OptionalFraction(document.RtpToleranceNumerator, document.RtpToleranceDenominator));
         }
+
+        /// <summary>Files saved before tolerance mode existed have no planned RTP or tolerance: they were exact deals.</summary>
+        private static Fraction? OptionalFraction(long? numerator, long? denominator) =>
+            numerator.HasValue && denominator.HasValue ? new Fraction(numerator.Value, denominator.Value) : (Fraction?)null;
 
         private static byte[] ToBytes(IReadOnlyList<ushort> ids)
         {
@@ -242,6 +252,10 @@ namespace FinitePool.Engine.Persistence
             public string CreatedUtc { get; set; }
             public long TargetRtpNumerator { get; set; }
             public long TargetRtpDenominator { get; set; }
+            public long? PlannedRtpNumerator { get; set; }
+            public long? PlannedRtpDenominator { get; set; }
+            public long? RtpToleranceNumerator { get; set; }
+            public long? RtpToleranceDenominator { get; set; }
             public long PairedCycles { get; set; }
             public long BonusUnitValueUnits { get; set; }
             public LimitsDocument Limits { get; set; }

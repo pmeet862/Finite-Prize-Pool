@@ -74,6 +74,11 @@ namespace FinitePool.Engine.Persistence
         public long PayoutsUnits { get; set; }
         public long TargetRtpNumerator { get; set; }
         public long TargetRtpDenominator { get; set; }
+
+        /// <summary>The deal's planned RTP. Zero (unset) in state saved before tolerance mode, meaning "same as target".</summary>
+        public long PlannedRtpNumerator { get; set; }
+        public long PlannedRtpDenominator { get; set; }
+
         public DateTime CreatedUtc { get; set; }
         public DateTime? ActivatedUtc { get; set; }
         public DateTime? ClosedUtc { get; set; }

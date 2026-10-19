@@ -79,6 +79,19 @@ namespace FinitePool.Engine.Config
                 errors.Add("targetRtp is required.");
             }
 
+            Fraction rtpTolerance = Fraction.Zero;
+            if (document.RtpTolerance.HasValue)
+            {
+                try
+                {
+                    rtpTolerance = Fraction.FromDecimal(document.RtpTolerance.Value);
+                }
+                catch (OverflowException)
+                {
+                    errors.Add($"rtpTolerance {document.RtpTolerance.Value} has too many decimal places to hold exactly.");
+                }
+            }
+
             var betLevels = new List<BetLevel>();
             foreach (long cents in document.BetLevelsCents ?? new List<long>())
             {
@@ -104,7 +117,8 @@ namespace FinitePool.Engine.Config
                 Required(document.MaxGenerationAttempts, "maxGenerationAttempts", errors),
                 Required(document.MaxDealTickets, "maxDealTickets", errors),
                 placementLimits,
-                modes);
+                modes,
+                rtpTolerance);
         }
 
         private static PlacementLimitsConfig MapPlacementLimits(PlacementLimitsDocument document, List<string> errors)
@@ -234,6 +248,7 @@ namespace FinitePool.Engine.Config
             public bool IsPlaceholder { get; set; }
             public string Notes { get; set; }
             public decimal? TargetRtp { get; set; }
+            public decimal? RtpTolerance { get; set; }
             public long? BonusUnitValueCents { get; set; }
             public List<long> BetLevelsCents { get; set; }
             public int? MaxGenerationAttempts { get; set; }
