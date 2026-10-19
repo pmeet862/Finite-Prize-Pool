@@ -14,13 +14,11 @@ using static FinitePool.Tests.Fakes.Services;
 namespace FinitePool.Tests
 {
     /// <summary>
-    /// The ten acceptance scenarios from brief §8.1, one test (or pair) each,
-    /// named so the mapping is obvious. Scenarios are added as their phase lands:
-    ///   10 → Phase 1 (calculator)
-    ///   2, 3 → Phase 2 (builder + placement)
-    ///   4, 5, 6 → Phase 4 (persistence + spins)
-    ///   1, 7, 8, 9 → Phase 5 (lifecycle + retire)
-    /// Numbers come from <see cref="GoldenDealSizes"/> (PLACEHOLDER until the math PDF arrives).
+    /// The ten acceptance scenarios from brief §8.1, one test (or pair) each, named
+    /// ScenarioNN_ so the mapping is obvious. Other fixtures cover the edge cases.
+    ///
+    /// Scenarios 1, 3b and 10 assert exact numbers from <see cref="GoldenDealSizes"/>, which are
+    /// PLACEHOLDER values until the math PDF arrives; the rest hold for any bag values.
     /// </summary>
     public class ScenarioTests
     {

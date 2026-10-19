@@ -33,6 +33,19 @@ namespace FinitePool.Tests
         }
 
         [Test]
+        public void TicketTypes_AreNotPublic_SoTheGameCanNotReadTheTicketList()
+        {
+            // Brief §3.1 and §5: the UI must never read the ticket list. Keeping these types internal
+            // makes that a compile error in the Game, debug panel and Editor assemblies.
+            Assert.That(typeof(FinitePool.Engine.Deals.Deal).IsPublic, Is.False);
+            Assert.That(typeof(FinitePool.Engine.Deals.TicketType).IsPublic, Is.False);
+
+            var debugPanelFacts = typeof(FinitePool.Engine.Service.DealInfo).GetProperties().Select(property => property.Name);
+            Assert.That(debugPanelFacts, Is.EquivalentTo(new[] { "DealId", "State", "ConfigVersion", "SpinsPlayed" }),
+                "the debug panel may show these four facts and nothing about upcoming tickets");
+        }
+
+        [Test]
         public void EngineSource_UsesNoUnityApisOrNonCryptoRandom()
         {
             Assert.That(Directory.Exists(EngineSourceFolder), Is.True, $"Engine folder not found: {EngineSourceFolder}");
