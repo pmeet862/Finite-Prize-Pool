@@ -20,7 +20,7 @@ namespace FinitePool.Tests
         [Test]
         public void FreshlyBuiltDeals_Verify_ForEveryCombination()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealBuilder builder = NewBuilder();
 
             foreach (GameMode mode in Enum.GetValues(typeof(GameMode)))
@@ -130,7 +130,7 @@ namespace FinitePool.Tests
 
         private static Deal BuildDeal(GameMode mode, long betCents)
         {
-            BuildResult result = NewBuilder().Build(TestConfigs.Placeholder(), mode, TestConfigs.Bet(betCents));
+            BuildResult result = NewBuilder().Build(TestConfigs.Shipped(), mode, TestConfigs.Bet(betCents));
             Assert.That(result.IsSuccess, Is.True, result.Message);
             return result.Deal;
         }
@@ -143,7 +143,7 @@ namespace FinitePool.Tests
         [Test]
         public void RoundTrip_GivesAnIdenticalDeal_ThatStillVerifies()
         {
-            Deal original = NewBuilder().Build(TestConfigs.Placeholder(), GameMode.Outer, TestConfigs.Bet(175)).Deal;
+            Deal original = NewBuilder().Build(TestConfigs.Shipped(), GameMode.Outer, TestConfigs.Bet(175)).Deal;
 
             Deal loaded = DealFileCodec.Deserialize(DealFileCodec.Serialize(original));
 
@@ -208,7 +208,7 @@ namespace FinitePool.Tests
         [Test]
         public void TicketsAreStoredCompactly_TwoBytesPerTicket()
         {
-            Deal deal = NewBuilder().Build(TestConfigs.Placeholder(), GameMode.Outer, TestConfigs.Bet(475)).Deal;
+            Deal deal = NewBuilder().Build(TestConfigs.Shipped(), GameMode.Outer, TestConfigs.Bet(475)).Deal;
 
             JObject file = JObject.Parse(DealFileCodec.Serialize(deal));
 
@@ -217,7 +217,7 @@ namespace FinitePool.Tests
 
         private static JObject SavedDealJson()
         {
-            Deal deal = NewBuilder().Build(TestConfigs.Placeholder(), GameMode.Inner, TestConfigs.Bet(100)).Deal;
+            Deal deal = NewBuilder().Build(TestConfigs.Shipped(), GameMode.Inner, TestConfigs.Bet(100)).Deal;
             return JObject.Parse(DealFileCodec.Serialize(deal));
         }
 

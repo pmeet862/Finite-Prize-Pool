@@ -1,7 +1,7 @@
 {
-  "configVersion": "placeholder-2026-10-15.1-tolerance",
-  "isPlaceholder": true,
-  "notes": "PLACEHOLDER bag values. The real bags are on 'Finite Pool Mathematics' PDF pp.2-3. These values reproduce the brief's stated facts (Inner $1.00 = 1 paired cycle, Outer $1.00 = 9, Outer $1.75 with 1 cycle is fractional, Inner $1.00 with max 5 losses is impossible). See .docs/ASSUMPTIONS.md A-01. This is the ONLY file that holds bag values.",
+  "configVersion": "assumed-bags-2026-10-19.1-tolerance",
+  "assumedBagValues": true,
+  "notes": "Assumed bag values. The task brief points to a 'Finite Pool Mathematics' PDF for the real bags, but that PDF was not provided, so these values are our own. They reproduce every fact the brief states: Inner $1.00 needs 1 paired cycle, Outer $1.00 needs 9, Outer $1.75 with 1 paired cycle is fractional, and Inner $1.00 with at most 5 consecutive losses is impossible. This is the only file that holds bag values.",
   "targetRtp": "0.90",
   "rtpTolerance": "0.001",
   "bonusUnitValueCents": 100,

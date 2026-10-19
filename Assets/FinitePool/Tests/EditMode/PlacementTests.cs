@@ -13,7 +13,7 @@ namespace FinitePool.Tests
         [Test]
         public void Inner100_DefaultLimits_FollowTheBriefFormulas()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealSize size = DealSizeCalculator.Calculate(config, GameMode.Inner, TestConfigs.Bet(100)).Size;
 
             PlacementLimits limits = PlacementLimits.For(size, config.PlacementLimits);
@@ -27,7 +27,7 @@ namespace FinitePool.Tests
         [Test]
         public void Overrides_ReplaceTheFormula()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
             {
                 root["placementLimits"]["maxConsecutiveLossesOverride"] = 7;
                 root["placementLimits"]["maxRegularGapOverride"] = 12;
@@ -171,7 +171,7 @@ namespace FinitePool.Tests
                                     bigTickets: "[{ 'kind': 'Multiplier', 'multiplier': '0.9', 'count': 1 }]");
             Assert.That(size.LosingTickets, Is.EqualTo(0));
 
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             PlacementLimits limits = PlacementLimits.For(size, config.PlacementLimits);
 
             Assert.That(PlacementFeasibility.FindImpossibility(size, limits), Does.Contain("fixed repeating interval"));
@@ -180,7 +180,7 @@ namespace FinitePool.Tests
         [Test]
         public void TooFewRegularSlotsForTheGapLimit_IsImpossible()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root => root["placementLimits"]["maxRegularGapOverride"] = 7);
+            DealConfig config = TestConfigs.ShippedWith(root => root["placementLimits"]["maxRegularGapOverride"] = 7);
             DealSize size = DealSizeCalculator.Calculate(config, GameMode.Inner, TestConfigs.Bet(100)).Size;
             PlacementLimits limits = PlacementLimits.For(size, config.PlacementLimits);
 
@@ -190,7 +190,7 @@ namespace FinitePool.Tests
 
         private static DealSize SizeFor(string regularTickets, string bigTickets)
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
             {
                 root["modes"]["Inner"]["regularBag"]["tickets"] = JArray.Parse(regularTickets);
                 root["modes"]["Inner"]["bigBag"]["tickets"] = JArray.Parse(bigTickets);
@@ -202,7 +202,7 @@ namespace FinitePool.Tests
 
         private static (DealSize, PlacementLimits) Inner100With(int? maxConsecutiveLosses)
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
                 root["placementLimits"]["maxConsecutiveLossesOverride"] = maxConsecutiveLosses);
             DealSize size = DealSizeCalculator.Calculate(config, GameMode.Inner, TestConfigs.Bet(100)).Size;
             return (size, PlacementLimits.For(size, config.PlacementLimits));

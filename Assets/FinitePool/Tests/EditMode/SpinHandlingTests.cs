@@ -102,7 +102,7 @@ namespace FinitePool.Tests
         [Test]
         public void ADealThatCannotBeBuilt_MakesTheComboUnavailable_WithTheReason()
         {
-            var config = TestConfigs.PlaceholderWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
+            var config = TestConfigs.ShippedWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
             DealService service = Open(new InMemoryDealStore(), config);
             service.RegisterPlayer(Alice, StartingBalance);
 

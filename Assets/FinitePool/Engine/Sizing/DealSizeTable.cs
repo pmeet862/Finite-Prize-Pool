@@ -23,7 +23,7 @@ namespace FinitePool.Engine.Sizing
             string rtpMode = config.IsToleranceMode
                 ? $"tolerance mode: RTP within {config.TargetRtp.ToPercentString()} ± {(config.RtpTolerance.ToDecimal() * 100m).ToString("0.###", CultureInfo.InvariantCulture)} points"
                 : $"exact mode: RTP exactly {config.TargetRtp.ToPercentString()}";
-            csv.AppendLine($"# Deal-size table for config {config.ConfigVersion}, {rtpMode}{(config.IsPlaceholder ? " (PLACEHOLDER bag values)" : "")}");
+            csv.AppendLine($"# Deal-size table for config {config.ConfigVersion}, {rtpMode}{(config.AssumedBagValues ? " (ASSUMED bag values: math PDF not provided)" : "")}");
             csv.AppendLine(HEADER);
 
             int rowNumber = 0;

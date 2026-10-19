@@ -31,6 +31,7 @@ namespace FinitePool.Editor
             }
 
             Directory.Delete(folder, recursive: true);
+            DealAdminWindow.ReloadSavedRecords();
             Debug.Log($"Deleted saved Finite Pool data ({folder}). The next Play starts from scratch.");
         }
 

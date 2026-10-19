@@ -6,13 +6,13 @@ namespace FinitePool.Tests
     /// Expected deal sizes, worked out independently of the engine (python,
     /// using N = k·C·den ÷ (b·num), k = b·num ÷ gcd(b·num, C·den)).
     ///
-    /// PLACEHOLDER: these match the placeholder bags in deal-config.json.
-    /// When the math PDF arrives, this file and deal-config.json are the two
-    /// files to update (see .docs/IMPLEMENTATION_PLAN.md §8).
+    /// They match the assumed bag values in deal-config.json (the math PDF was
+    /// not provided). If the bags ever change, this file and deal-config.json
+    /// are the two files to update.
     /// </summary>
     internal static class GoldenDealSizes
     {
-        public const bool IS_PLACEHOLDER = true;
+        public const bool ASSUMED_BAG_VALUES = true;
 
         public static readonly GoldenDealSize Inner100 = new GoldenDealSize(GameMode.Inner, 100, 1, 60, 8, 6000, 5400);
         public static readonly GoldenDealSize Outer100 = new GoldenDealSize(GameMode.Outer, 100, 9, 1360, 117, 136000, 122400);

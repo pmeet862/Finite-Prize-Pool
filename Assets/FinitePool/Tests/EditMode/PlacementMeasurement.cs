@@ -28,7 +28,7 @@ namespace FinitePool.Tests
         [Test, Explicit("Report: run on demand")]
         public void MeasureLayoutStrategies_ForAllCombinations()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             var random = new CryptoRandomSource();
             var builder = new DealBuilder(random, new SystemClock(), NullEngineLog.Instance);
             var report = new StringBuilder();
@@ -36,7 +36,7 @@ namespace FinitePool.Tests
             report.AppendLine("# R1 placement measurement");
             report.AppendLine();
             report.AppendLine($"Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC from config `{config.ConfigVersion}`" +
-                              (config.IsPlaceholder ? " (**PLACEHOLDER bags**)." : "."));
+                              (config.AssumedBagValues ? " (**assumed bag values**)." : "."));
             report.AppendLine($"Each strategy makes {ATTEMPTS_PER_STRATEGY} independent attempts per combination; " +
                               "an attempt is valid if it passes `PlacementValidator`. Build time is one full GapRepair build (median of 3).");
             report.AppendLine();

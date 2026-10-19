@@ -11,10 +11,10 @@ namespace FinitePool.Tests
         [Test]
         public void ShippedConfig_ParsesWithExpectedValues()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
 
             Assert.That(config.ConfigVersion, Is.Not.Empty);
-            Assert.That(config.IsPlaceholder, Is.EqualTo(GoldenDealSizes.IS_PLACEHOLDER));
+            Assert.That(config.AssumedBagValues, Is.EqualTo(GoldenDealSizes.ASSUMED_BAG_VALUES));
             Assert.That(config.TargetRtp, Is.EqualTo(new Fraction(9, 10)));
             Assert.That(config.BonusUnitValue, Is.EqualTo(Money.FromCents(100)));
             Assert.That(config.MaxGenerationAttempts, Is.EqualTo(1000));
@@ -24,7 +24,7 @@ namespace FinitePool.Tests
         [Test]
         public void ShippedConfig_Has20BetLevels_From25CentsTo5DollarsIn25CentSteps()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
 
             Assert.That(config.BetLevels, Has.Count.EqualTo(20));
             for (int i = 0; i < 20; i++)
@@ -34,9 +34,9 @@ namespace FinitePool.Tests
         }
 
         [Test]
-        public void ShippedConfig_BagTotals_MatchPlaceholderDesign()
+        public void ShippedConfig_BagTotals_MatchTheAssumedDesign()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             ModeConfig inner = config.GetMode(GameMode.Inner);
             ModeConfig outer = config.GetMode(GameMode.Outer);
 
@@ -49,7 +49,7 @@ namespace FinitePool.Tests
         [Test]
         public void NumericDecimal_IsAccepted_AsExactDecimal()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root => root["targetRtp"] = 0.9m);
+            DealConfig config = TestConfigs.ShippedWith(root => root["targetRtp"] = 0.9m);
 
             Assert.That(config.TargetRtp, Is.EqualTo(new Fraction(9, 10)));
         }
@@ -58,7 +58,7 @@ namespace FinitePool.Tests
         public void UnknownField_IsRejected()
         {
             var exception = Assert.Throws<DealConfigException>(() =>
-                TestConfigs.PlaceholderWith(root => root["regularBagTypo"] = 1));
+                TestConfigs.ShippedWith(root => root["regularBagTypo"] = 1));
 
             Assert.That(exception.Message, Does.Contain("JSON error"));
         }
@@ -67,7 +67,7 @@ namespace FinitePool.Tests
         public void MissingMode_IsRejected()
         {
             var exception = Assert.Throws<DealConfigException>(() =>
-                TestConfigs.PlaceholderWith(root => ((JObject)root["modes"]).Remove("Outer")));
+                TestConfigs.ShippedWith(root => ((JObject)root["modes"]).Remove("Outer")));
 
             Assert.That(exception.Errors, Has.Some.Contains("modes.Outer is missing"));
         }
@@ -76,7 +76,7 @@ namespace FinitePool.Tests
         public void LossTicketInBag_IsRejected()
         {
             var exception = Assert.Throws<DealConfigException>(() =>
-                TestConfigs.PlaceholderWith(root => root["modes"]["Inner"]["regularBag"]["tickets"][0]["kind"] = "Loss"));
+                TestConfigs.ShippedWith(root => root["modes"]["Inner"]["regularBag"]["tickets"][0]["kind"] = "Loss"));
 
             Assert.That(exception.Errors, Has.Some.Contains("must be 'Multiplier' or 'Bonus'"));
         }
@@ -85,7 +85,7 @@ namespace FinitePool.Tests
         public void TicketWithBothAwards_IsRejected()
         {
             var exception = Assert.Throws<DealConfigException>(() =>
-                TestConfigs.PlaceholderWith(root => root["modes"]["Inner"]["bigBag"]["tickets"][1]["multiplier"] = "2"));
+                TestConfigs.ShippedWith(root => root["modes"]["Inner"]["bigBag"]["tickets"][1]["multiplier"] = "2"));
 
             Assert.That(exception.Errors, Has.Some.Contains("must not set multiplier"));
         }
@@ -93,7 +93,7 @@ namespace FinitePool.Tests
         [Test]
         public void InvalidValues_AreAllReportedTogether()
         {
-            var exception = Assert.Throws<DealConfigException>(() => TestConfigs.PlaceholderWith(root =>
+            var exception = Assert.Throws<DealConfigException>(() => TestConfigs.ShippedWith(root =>
             {
                 root["configVersion"] = "";
                 root["maxGenerationAttempts"] = 0;

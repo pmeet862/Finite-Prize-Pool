@@ -15,7 +15,7 @@ namespace FinitePool.Tests
         [SetUp]
         public void SetUp()
         {
-            m_config = TestConfigs.Placeholder();
+            m_config = TestConfigs.Shipped();
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace FinitePool.Tests
         {
             DealSize size = Calculate(GameMode.Inner, 100);
 
-            // Placeholder Inner: Σmult = 29, Σbonus = 25 → 29 × $1 + 25 × $1 = $54.
+            // Assumed Inner bags: Σmult = 29, Σbonus = 25 → 29 × $1 + 25 × $1 = $54.
             Assert.That(size.MultiplierTotalPerPairedCycle, Is.EqualTo(29m));
             Assert.That(size.BonusUnitsPerPairedCycle, Is.EqualTo(25));
             Assert.That(size.PayoutPerPairedCycle, Is.EqualTo(Money.FromCents(5400)));
@@ -112,7 +112,7 @@ namespace FinitePool.Tests
         [Test]
         public void FractionalCentAward_IsRejected_NotRounded()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
                 root["modes"]["Inner"]["regularBag"]["tickets"][0]["multiplier"] = "0.5");
 
             DealSizeResult at25Cents = DealSizeCalculator.Calculate(config, GameMode.Inner, TestConfigs.Bet(25));
@@ -126,7 +126,7 @@ namespace FinitePool.Tests
         public void FewerPaidSpinsThanPrizeTickets_IsRejected()
         {
             // 11 tickets of x0.5 per paired cycle pay $5.50 at $1. 9 cycles → 55 spins for 99 prizes.
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
             {
                 root["modes"]["Inner"]["regularBag"]["tickets"] = JArray.Parse("[{ 'kind': 'Multiplier', 'multiplier': '0.5', 'count': 10 }]");
                 root["modes"]["Inner"]["bigBag"]["tickets"] = JArray.Parse("[{ 'kind': 'Multiplier', 'multiplier': '0.5', 'count': 1 }]");
@@ -141,8 +141,8 @@ namespace FinitePool.Tests
         public void DealLargerThanMaxDealTickets_IsRejected()
         {
             long inner100Spins = GoldenDealSizes.Inner100.PaidSpins;
-            DealConfig tooSmall = TestConfigs.PlaceholderWith(root => root["maxDealTickets"] = inner100Spins - 1);
-            DealConfig justEnough = TestConfigs.PlaceholderWith(root => root["maxDealTickets"] = inner100Spins);
+            DealConfig tooSmall = TestConfigs.ShippedWith(root => root["maxDealTickets"] = inner100Spins - 1);
+            DealConfig justEnough = TestConfigs.ShippedWith(root => root["maxDealTickets"] = inner100Spins);
 
             Assert.That(DealSizeCalculator.Calculate(tooSmall, GameMode.Inner, TestConfigs.Bet(100)).Rejection,
                 Is.EqualTo(DealSizeRejection.ExceedsMaxDealTickets));

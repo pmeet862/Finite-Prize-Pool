@@ -15,8 +15,8 @@ namespace FinitePool.Engine.Config
     {
         public string ConfigVersion { get; }
 
-        /// <summary>True while the bag values are placeholders (the math PDF has not been applied yet).</summary>
-        public bool IsPlaceholder { get; }
+        /// <summary>True when the bag values are our own assumptions rather than an official specification (the math PDF was not provided).</summary>
+        public bool AssumedBagValues { get; }
 
         public string Notes { get; }
         public Fraction TargetRtp { get; }
@@ -40,7 +40,7 @@ namespace FinitePool.Engine.Config
 
         public DealConfig(
             string configVersion,
-            bool isPlaceholder,
+            bool assumedBagValues,
             string notes,
             Fraction targetRtp,
             Money bonusUnitValue,
@@ -52,7 +52,7 @@ namespace FinitePool.Engine.Config
             Fraction? rtpTolerance = null)
         {
             ConfigVersion = configVersion;
-            IsPlaceholder = isPlaceholder;
+            AssumedBagValues = assumedBagValues;
             Notes = notes ?? string.Empty;
             TargetRtp = targetRtp;
             RtpTolerance = rtpTolerance ?? Fraction.Zero;

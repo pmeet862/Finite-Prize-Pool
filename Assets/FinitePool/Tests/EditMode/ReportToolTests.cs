@@ -13,9 +13,9 @@ namespace FinitePool.Tests
         [Test]
         public void DealSizeTable_HasAHeaderAndOneRowPerModeAndBet_MatchingTheGoldenValues()
         {
-            string[] lines = DealSizeTable.ToCsv(TestConfigs.Placeholder()).Trim().Split('\n').Select(line => line.TrimEnd('\r')).ToArray();
+            string[] lines = DealSizeTable.ToCsv(TestConfigs.Shipped()).Trim().Split('\n').Select(line => line.TrimEnd('\r')).ToArray();
 
-            Assert.That(lines[0], Does.StartWith("# Deal-size table").And.Contain("PLACEHOLDER"));
+            Assert.That(lines[0], Does.StartWith("# Deal-size table").And.Contain("ASSUMED bag values"));
             Assert.That(lines[1], Does.StartWith("no,mode,bet,"));
             Assert.That(lines.Length, Is.EqualTo(2 + 40));
 
@@ -27,7 +27,7 @@ namespace FinitePool.Tests
         [Test]
         public void DealSizeTable_KeepsRejectedCombinations_WithTheirReason()
         {
-            var config = TestConfigs.PlaceholderWith(root => root["modes"]["Inner"]["regularBag"]["tickets"][0]["multiplier"] = "0.5");
+            var config = TestConfigs.ShippedWith(root => root["modes"]["Inner"]["regularBag"]["tickets"][0]["multiplier"] = "0.5");
 
             string csv = DealSizeTable.ToCsv(config);
 
@@ -38,7 +38,7 @@ namespace FinitePool.Tests
         public void Simulator_PlaysCompleteDeals_EachExactlyOnTarget()
         {
             IReadOnlyList<CompletedDealRecord> deals = DealSimulator.PlayCompleteDeals(
-                TestConfigs.Placeholder(), GameMode.Inner, TestConfigs.Bet(100), 3);
+                TestConfigs.Shipped(), GameMode.Inner, TestConfigs.Bet(100), 3);
 
             Assert.That(deals, Has.Count.EqualTo(3));
             Assert.That(deals.Select(deal => deal.DealId).Distinct().Count(), Is.EqualTo(3));

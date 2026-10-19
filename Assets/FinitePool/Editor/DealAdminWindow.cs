@@ -65,6 +65,16 @@ namespace FinitePool.Editor
         // Saved records are re-read when the window regains focus (e.g. after Delete Saved Data), not on every repaint.
         private void OnFocus() => m_savedRecords = null;
 
+        /// <summary>Makes every open admin window re-read the saved records, e.g. right after Delete Saved Data.</summary>
+        internal static void ReloadSavedRecords()
+        {
+            foreach (DealAdminWindow window in Resources.FindObjectsOfTypeAll<DealAdminWindow>())
+            {
+                window.m_savedRecords = null;
+                window.Repaint();
+            }
+        }
+
         private void OnGUI()
         {
             IDealAdmin admin = Application.isPlaying ? GameBootstrap.Admin : null;

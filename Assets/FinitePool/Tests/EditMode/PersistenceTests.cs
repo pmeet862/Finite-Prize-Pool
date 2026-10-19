@@ -77,7 +77,7 @@ namespace FinitePool.Tests
         {
             var store = new FileDealStore(m_folder.Path);
             Deal deal = new DealBuilder(new CryptoRandomSource(), new FakeClock(), NullEngineLog.Instance)
-                .Build(TestConfigs.Placeholder(), GameMode.Inner, TestConfigs.Bet(100)).Deal;
+                .Build(TestConfigs.Shipped(), GameMode.Inner, TestConfigs.Bet(100)).Deal;
 
             store.WriteDeal(deal);
 

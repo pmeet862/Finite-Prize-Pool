@@ -111,7 +111,7 @@ namespace FinitePool.Tests.Fakes
 
         public static DealService Open(IDealStore store, DealConfig config = null, IRandomSource random = null, IEngineLog log = null,
             IClock clock = null, IBackgroundScheduler scheduler = null) =>
-            new DealService(config ?? TestConfigs.Placeholder(), store, random ?? new CryptoRandomSource(), clock ?? new FakeClock(),
+            new DealService(config ?? TestConfigs.Shipped(), store, random ?? new CryptoRandomSource(), clock ?? new FakeClock(),
                 log ?? NullEngineLog.Instance, scheduler ?? new ImmediateScheduler());
 
         /// <summary>A service with Alice and Bob registered ($100 each) and an active deal for the given mode and bet.</summary>

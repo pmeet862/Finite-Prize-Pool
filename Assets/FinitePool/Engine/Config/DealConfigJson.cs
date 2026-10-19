@@ -109,7 +109,7 @@ namespace FinitePool.Engine.Config
 
             return new DealConfig(
                 document.ConfigVersion,
-                document.IsPlaceholder,
+                document.AssumedBagValues,
                 document.Notes,
                 targetRtp,
                 Money.FromCents(Required(document.BonusUnitValueCents, "bonusUnitValueCents", errors)),
@@ -245,7 +245,7 @@ namespace FinitePool.Engine.Config
         private sealed class DealConfigDocument
         {
             public string ConfigVersion { get; set; }
-            public bool IsPlaceholder { get; set; }
+            public bool AssumedBagValues { get; set; }
             public string Notes { get; set; }
             public decimal? TargetRtp { get; set; }
             public decimal? RtpTolerance { get; set; }

@@ -44,9 +44,9 @@ namespace FinitePool.Editor
             var report = new StringBuilder();
             report.AppendLine("# Simulation report");
             report.AppendLine();
-            if (config.IsPlaceholder)
+            if (config.AssumedBagValues)
             {
-                report.AppendLine($"> **PLACEHOLDER bag values** (config `{config.ConfigVersion}`). Re-run *Finite Pool → Write Simulation Report* once the math PDF values are in the config.");
+                report.AppendLine($"> Uses **assumed bag values** (config `{config.ConfigVersion}`): the task's math PDF was not provided, so the bags reproduce the facts the brief states. Regenerate with *Finite Pool → Write Simulation Report*.");
                 report.AppendLine();
             }
 

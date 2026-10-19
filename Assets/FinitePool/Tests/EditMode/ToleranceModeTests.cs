@@ -49,14 +49,14 @@ namespace FinitePool.Tests
             new object[] { GameMode.Outer, 475, 3L, 332L }, new object[] { GameMode.Outer, 500, 3L, 331L },
         };
 
-        private static DealConfig ToleranceConfig() => TestConfigs.PlaceholderWith(root => root["rtpTolerance"] = "0.001");
+        private static DealConfig ToleranceConfig() => TestConfigs.ShippedWith(root => root["rtpTolerance"] = "0.001");
 
         // ---------------------------------------------------------------- config and calculator
 
         [Test]
         public void Config_WithoutTolerance_IsExactMode()
         {
-            Assert.That(TestConfigs.Placeholder().IsToleranceMode, Is.False);
+            Assert.That(TestConfigs.Shipped().IsToleranceMode, Is.False);
             Assert.That(ToleranceConfig().IsToleranceMode, Is.True);
             Assert.That(ToleranceConfig().RtpTolerance, Is.EqualTo(Tolerance));
         }
@@ -64,8 +64,8 @@ namespace FinitePool.Tests
         [Test]
         public void Config_ToleranceThatIsNegativeOrAtLeastTheTarget_IsRejected()
         {
-            Assert.Throws<DealConfigException>(() => TestConfigs.PlaceholderWith(root => root["rtpTolerance"] = "-0.001"));
-            Assert.Throws<DealConfigException>(() => TestConfigs.PlaceholderWith(root => root["rtpTolerance"] = "0.9"));
+            Assert.Throws<DealConfigException>(() => TestConfigs.ShippedWith(root => root["rtpTolerance"] = "-0.001"));
+            Assert.Throws<DealConfigException>(() => TestConfigs.ShippedWith(root => root["rtpTolerance"] = "0.9"));
         }
 
         [TestCaseSource(nameof(ExpectedSizes))]
@@ -81,7 +81,7 @@ namespace FinitePool.Tests
         [Test]
         public void Calculator_UsesOnePairedCycle_WhereExactModeNeedsNine()
         {
-            DealSize exact = DealSizeCalculator.Calculate(TestConfigs.Placeholder(), GameMode.Outer, TestConfigs.Bet(100)).Size;
+            DealSize exact = DealSizeCalculator.Calculate(TestConfigs.Shipped(), GameMode.Outer, TestConfigs.Bet(100)).Size;
             DealSize tolerant = DealSizeCalculator.Calculate(ToleranceConfig(), GameMode.Outer, TestConfigs.Bet(100)).Size;
 
             Assert.That(exact.PairedCycles, Is.EqualTo(9));

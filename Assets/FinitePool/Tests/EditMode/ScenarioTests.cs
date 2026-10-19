@@ -17,8 +17,8 @@ namespace FinitePool.Tests
     /// The ten acceptance scenarios from brief §8.1, one test (or pair) each, named
     /// ScenarioNN_ so the mapping is obvious. Other fixtures cover the edge cases.
     ///
-    /// Scenarios 1, 3b and 10 assert exact numbers from <see cref="GoldenDealSizes"/>, which are
-    /// PLACEHOLDER values until the math PDF arrives; the rest hold for any bag values.
+    /// Scenarios 1, 3b and 10 assert exact numbers from <see cref="GoldenDealSizes"/>, which follow
+    /// the assumed bag values; the rest hold for any bag values.
     /// </summary>
     public class ScenarioTests
     {
@@ -75,7 +75,7 @@ namespace FinitePool.Tests
         [Test]
         public void Scenario03a_GeneratedDeals_SatisfyPlacementLimits()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealBuilder builder = NewBuilder();
 
             foreach ((GameMode mode, long betCents) in SampleCombinations)
@@ -94,7 +94,7 @@ namespace FinitePool.Tests
         [Test]
         public void Scenario03b_Inner100_MaxConsecutiveLosses5_RejectedAsImpossible()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
                 root["placementLimits"]["maxConsecutiveLossesOverride"] = GoldenDealSizes.INNER_100_IMPOSSIBLE_MAX_LOSS_RUN);
 
             BuildResult result = NewBuilder().Build(config, GameMode.Inner, TestConfigs.Bet(100));
@@ -208,7 +208,7 @@ namespace FinitePool.Tests
             string activeId = service.GetActiveDealInfo(GameMode.Inner, TestConfigs.Bet(100)).DealId;
             string staleSuccessorId = ReadyDeal(store, GameMode.Inner, 100).DealId;
 
-            service.ApplyConfig(TestConfigs.PlaceholderWith(root => root["configVersion"] = "v2-test"));
+            service.ApplyConfig(TestConfigs.ShippedWith(root => root["configVersion"] = "v2-test"));
 
             DealInfo active = service.GetActiveDealInfo(GameMode.Inner, TestConfigs.Bet(100));
             Assert.That((active.DealId, active.ConfigVersion, active.SpinsPlayed), Is.EqualTo((activeId, oldVersion, 5)), "the active deal is untouched");
@@ -265,7 +265,7 @@ namespace FinitePool.Tests
         [Test]
         public void Scenario10_Outer175_OnePairedCycle_RejectedNotRounded()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
 
             DealSizeResult result = DealSizeCalculator.CalculateForCycles(config, GameMode.Outer, TestConfigs.Bet(175), 1);
 
@@ -276,7 +276,7 @@ namespace FinitePool.Tests
 
         private static void AssertNoCycleMixing(TicketCategory category)
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealBuilder builder = NewBuilder();
 
             foreach ((GameMode mode, long betCents) in SampleCombinations)

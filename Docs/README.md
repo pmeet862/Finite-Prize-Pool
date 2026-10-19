@@ -4,12 +4,12 @@ This folder holds the documents handed in with the assessment (brief §7):
 
 | File | Brief item | Status |
 |---|---|---|
-| `DESIGN_NOTE.md` | §7.6 design note answering §8.2 | Not written yet (Phase 9) |
-| `deal-size-table.csv` | §7.2 deal-size table, all 40 mode/bet combinations | Generated (placeholder bags). Regenerate: **Finite Pool → Export Deal-Size Table (CSV)** |
+| `DESIGN_NOTE.md` | §7.6 design note answering §8.2 | Written |
+| `deal-size-table.csv` | §7.2 deal-size table, all 40 mode/bet combinations | Generated. Regenerate: **Finite Pool → Export Deal-Size Table (CSV)** |
 | `deal-size-table-tolerance.csv` | §6 stretch: tolerance mode (90% ± 0.1 points), smallest deal per combination | Generated. Regenerate: **Finite Pool → Export Deal-Size Table, Tolerance Mode (CSV)** |
-| `SIMULATION_REPORT.md` | §7.4 simulation report (10 × Inner $1.00, 1 × Outer $1.00) | Generated (placeholder bags). Regenerate: **Finite Pool → Write Simulation Report** |
+| `SIMULATION_REPORT.md` | §7.4 simulation report (10 × Inner $1.00, 1 × Outer $1.00) | Generated. Regenerate: **Finite Pool → Write Simulation Report** |
 
-Anything generated before the *Finite Pool Mathematics* PDF arrives uses **placeholder** bag values. Such files say so in their header.
+The *Finite Pool Mathematics* PDF was not provided, so every generated file uses the assumed bag values in `deal-config.json` and says so in its header. The screen recording (§7.5) is provided separately.
 
 ## Starting over while testing
 

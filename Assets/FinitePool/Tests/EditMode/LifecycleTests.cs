@@ -64,7 +64,7 @@ namespace FinitePool.Tests
             DealService before = ReadyToPlay(store, GameMode.Inner, 100);
             string activeId = before.GetActiveDealInfo(GameMode.Inner, OneDollar).DealId;
             string staleReadyId = ReadyDeal(store, GameMode.Inner, 100).DealId;
-            DealConfig v2 = TestConfigs.PlaceholderWith(root => root["configVersion"] = "v2-test");
+            DealConfig v2 = TestConfigs.ShippedWith(root => root["configVersion"] = "v2-test");
 
             DealService after = Open(store, v2); // the game restarts with a new config file
 
@@ -76,7 +76,7 @@ namespace FinitePool.Tests
         [Test]
         public void AFailedBuild_IsRecordedOnce_AndOnlyRetriedWhenAskedAgain()
         {
-            DealConfig impossible = TestConfigs.PlaceholderWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
+            DealConfig impossible = TestConfigs.ShippedWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
             DealService service = Open(new InMemoryDealStore(), impossible);
             service.RegisterPlayer(Alice, StartingBalance);
 

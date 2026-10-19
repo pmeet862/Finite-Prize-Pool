@@ -1,4 +1,4 @@
-# Deal-size table for config placeholder-2026-10-15.1-tolerance, tolerance mode: RTP within 90.000% ± 0.1 points (PLACEHOLDER bag values)
+# Deal-size table for config assumed-bags-2026-10-19.1-tolerance, tolerance mode: RTP within 90.000% ± 0.1 points (ASSUMED bag values: math PDF not provided)
 no,mode,bet,multiplier_total_per_paired_cycle,bonus_units_per_paired_cycle,payout_per_paired_cycle,paired_cycles,paid_spins,regular_tickets,big_tickets,prize_tickets,losing_tickets,total_wagers,total_payouts,planned_rtp,status
 1,Inner,0.25,29,25,32.25,3,430,18,6,24,406,107.50,96.75,90.000%,ok
 2,Inner,0.50,29,25,39.50,4,351,24,8,32,319,175.50,158.00,90.028%,ok

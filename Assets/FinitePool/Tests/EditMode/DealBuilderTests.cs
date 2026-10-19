@@ -24,7 +24,7 @@ namespace FinitePool.Tests
         [Test]
         public void Inner100_BuildsADealThatMatchesTheCalculator()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealSize size = DealSizeCalculator.Calculate(config, GameMode.Inner, TestConfigs.Bet(100)).Size;
 
             BuildResult result = Builder().Build(config, GameMode.Inner, TestConfigs.Bet(100));
@@ -45,7 +45,7 @@ namespace FinitePool.Tests
         [Test]
         public void EveryCombination_Builds_AndPassesAnIndependentLimitCheck()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealBuilder builder = Builder();
 
             foreach (GameMode mode in Enum.GetValues(typeof(GameMode)))
@@ -64,7 +64,7 @@ namespace FinitePool.Tests
         [Test]
         public void ShuffleAndCheck_StillWorks_ForASmallDeal()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root => root["placementLimits"]["layoutStrategy"] = "ShuffleAndCheck");
+            DealConfig config = TestConfigs.ShippedWith(root => root["placementLimits"]["layoutStrategy"] = "ShuffleAndCheck");
 
             BuildResult result = Builder().Build(config, GameMode.Inner, TestConfigs.Bet(100));
 
@@ -75,7 +75,7 @@ namespace FinitePool.Tests
         [Test]
         public void FailingEveryAttempt_StopsAtTheConfiguredCap_AndLogsTheRejection()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             var generator = new AlwaysInvalidLayoutGenerator();
 
             BuildResult result = Builder(generator).Build(config, GameMode.Inner, TestConfigs.Bet(100));
@@ -91,7 +91,7 @@ namespace FinitePool.Tests
         [Test]
         public void AttemptCap_IsConfigurable()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root => root["maxGenerationAttempts"] = 25);
+            DealConfig config = TestConfigs.ShippedWith(root => root["maxGenerationAttempts"] = 25);
             var generator = new AlwaysInvalidLayoutGenerator();
 
             BuildResult result = Builder(generator).Build(config, GameMode.Inner, TestConfigs.Bet(100));
@@ -103,7 +103,7 @@ namespace FinitePool.Tests
         [Test]
         public void ImpossibleLimits_AreRejected_WithoutSpendingAnAttempt()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
+            DealConfig config = TestConfigs.ShippedWith(root => root["placementLimits"]["maxConsecutiveLossesOverride"] = 5);
             var generator = new AlwaysInvalidLayoutGenerator();
 
             BuildResult result = Builder(generator).Build(config, GameMode.Inner, TestConfigs.Bet(100));
@@ -117,7 +117,7 @@ namespace FinitePool.Tests
         [Test]
         public void SizeRejection_IsReported_AsABuildFailure()
         {
-            DealConfig config = TestConfigs.PlaceholderWith(root =>
+            DealConfig config = TestConfigs.ShippedWith(root =>
                 root["modes"]["Inner"]["regularBag"]["tickets"][0]["multiplier"] = "0.5");
 
             BuildResult result = Builder().Build(config, GameMode.Inner, TestConfigs.Bet(25));
@@ -129,7 +129,7 @@ namespace FinitePool.Tests
         [Test]
         public void TwoBuilds_GiveDifferentDealIds_AndDifferentOrders()
         {
-            DealConfig config = TestConfigs.Placeholder();
+            DealConfig config = TestConfigs.Shipped();
             DealBuilder builder = Builder();
 
             var first = builder.Build(config, GameMode.Outer, TestConfigs.Bet(100)).Deal;
